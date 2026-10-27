@@ -43,7 +43,7 @@ Petrol carries structure. Annotation red appears once per page (.annot). */
     --bg-deep: #1A242C;
     --fg: #E6E9E6;
     --fg-muted: #A0AAB0;
-    --accent: #7DC0C0;
+    --accent: var(--se-petrol-on-dark, #7DC0C0);
     --annot: #E3877A;
     --line: #34414B;
     --line-strong: #5A6872;
@@ -55,7 +55,7 @@ Petrol carries structure. Annotation red appears once per page (.annot). */
   --bg-deep: #1A242C;
   --fg: #E6E9E6;
   --fg-muted: #A0AAB0;
-  --accent: #7DC0C0;
+  --accent: var(--se-petrol-on-dark, #7DC0C0);
   --annot: #E3877A;
   --line: #34414B;
   --line-strong: #5A6872;
@@ -94,6 +94,22 @@ img, svg { max-width: 100%; }
   display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 2rem;
 }
 .brand-name { font: 600 1.3125rem/1 var(--se-font-display); letter-spacing: .005em; }
+.emblem {
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+  color: var(--accent);
+  margin-right: .15rem;
+}
+/* Reserved LU mark slot; hidden until official asset lands. */
+.logo-slot {
+  display: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+  margin-left: auto;
+}
 
 /* ---------- The sheet ---------- */
 .sheet {
@@ -137,6 +153,19 @@ img, svg { max-width: 100%; }
   max-width: 22ch;
 }
 .lede { font-size: 1.3125rem; line-height: 1.5; margin-bottom: 1.25rem; }
+.byline {
+  display: flex; flex-wrap: wrap; gap: .15rem 1.25rem;
+  margin: 0 0 1rem;
+  font-size: .9375rem; line-height: 1.5; color: var(--fg-muted);
+}
+.byline a { color: var(--fg); text-decoration-color: var(--line-strong); }
+.byline a:hover { color: var(--accent); text-decoration-color: currentColor; }
+.links {
+  display: flex; flex-wrap: wrap; gap: .35rem 1.35rem;
+  margin: 1.25rem 0 0;
+  font-size: .9375rem;
+}
+.links a { font-weight: 600; }
 .opening > p:not(.lede) { color: var(--fg-muted); }
 
 /* ---------- Headings ---------- */
@@ -176,12 +205,12 @@ a.sec-n:hover { text-decoration: underline; text-decoration-thickness: 1px; }
 
 /* ---------- Annotation (the one red element per page) ---------- */
 .annot {
-  background: linear-gradient(var(--annot), var(--annot)) left calc(100% - .02em) / 100% 2px no-repeat;
+  background: linear-gradient(var(--annot), var(--annot)) left calc(100% - .02em) / 100% var(--se-annot-line, 2px) no-repeat;
   padding-bottom: .08em;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .annot { background-size: 0 2px; animation: annot-draw 900ms cubic-bezier(.3, .6, .2, 1) 700ms forwards; }
-  @keyframes annot-draw { to { background-size: 100% 2px; } }
+  .annot { background-size: 0 var(--se-annot-line, 2px); animation: annot-draw 900ms cubic-bezier(.3, .6, .2, 1) 700ms forwards; }
+  @keyframes annot-draw { to { background-size: 100% var(--se-annot-line, 2px); } }
 }
 
 /* ---------- Figures as plates ----------

@@ -3,3 +3,5 @@ docs/superpowers/
 brainstorms/
 __pycache__/
 *.pyc
+docs/_style-check/
+style-candidates/

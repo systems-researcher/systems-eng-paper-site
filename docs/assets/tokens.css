@@ -3,34 +3,38 @@ Palette: Figure and Petrol rev 1.
 Type: EB Garamond display, IBM Plex Sans body. */
 
 :root {
-/* Color roles */
---se-plate: #F2F3F1; /* page background */
---se-ink: #131B22; /* text */
---se-petrol: #0F5257; /* primary: structure, links, active states */
---se-annotation-red: #A63A2B; /* support: callouts, underlines, one per composition */
---se-grid-grey: #C9CDC9; /* neutral: hairlines, grids, dividers */
+  /* Color roles */
+  --se-plate: #F2F3F1; /* page background */
+  --se-ink: #131B22; /* text */
+  --se-petrol: #0F5257; /* primary: structure, links, active states */
+  --se-petrol-on-dark: #7DC0C0; /* accent on dark bg */
+  --se-annotation-red: #A63A2B; /* support: callouts, underlines, one per composition */
+  --se-grid-grey: #C9CDC9; /* neutral: hairlines, grids, dividers */
 
-/* Typography */
---se-font-display: "EB Garamond", Georgia, "Times New Roman", serif;
---se-font-body: "IBM Plex Sans", "Segoe UI", -apple-system, sans-serif;
+  /* Typography */
+  --se-font-display: "EB Garamond", Georgia, "Times New Roman", serif;
+  --se-font-body: "IBM Plex Sans", "Segoe UI", -apple-system, sans-serif;
 
-/* Spacing scale */
---se-space-1: 4px;
---se-space-2: 8px;
---se-space-3: 12px;
---se-space-4: 16px;
---se-space-5: 24px;
---se-space-6: 32px;
---se-space-7: 48px;
---se-space-8: 64px;
+  /* Spacing scale */
+  --se-space-1: 4px;
+  --se-space-2: 8px;
+  --se-space-3: 12px;
+  --se-space-4: 16px;
+  --se-space-5: 24px;
+  --se-space-6: 32px;
+  --se-space-7: 48px;
+  --se-space-8: 64px;
 
-/* Shape and rules */
---se-radius: 0px; /* rectilinear; soften to 2px only where needed */
---se-rule: 1px solid var(--se-grid-grey);
---se-rule-strong: 1px solid var(--se-ink);
---se-rule-masthead: 3px double var(--se-ink);
+  /* Shape and rules */
+  --se-radius: 0px; /* rectilinear; soften to 2px only where needed */
+  --se-rule: 1px solid var(--se-grid-grey);
+  --se-rule-strong: 1px solid var(--se-ink);
+  --se-rule-masthead: 3px double var(--se-ink);
 
-/* Composition */
---se-measure: 68ch; /* body text measure, keep 60-75ch */
---se-logo-clear-space: 1em; /* relative mark cap height */
+  /* Annotation underline height; 0 drops the mark (candidate b) */
+  --se-annot-line: 2px;
+
+  /* Composition */
+  --se-measure: 68ch; /* body text measure, keep 60-75ch */
+  --se-logo-clear-space: 1em; /* relative mark cap height */
 }
