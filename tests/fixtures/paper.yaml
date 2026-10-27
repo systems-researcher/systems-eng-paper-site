@@ -1,0 +1,36 @@
+title: "Epistemic adequacy under pressure"
+authors:
+  - name: "Gower, Jason"
+    affiliation: "Loughborough University"
+    orcid: "0000-0002-1825-0097"
+  - name: "Ji, Siyuan"
+year: 2026
+licence: "CC-BY-4.0"
+abstract: "A measured result on whether epistemic metadata changes answers."
+venue: "Systems Engineering"
+venue_kind: journal
+published: "2026-05-17"
+links:
+  doi: "10.1000/xyz"
+  arxiv: "arXiv:2401.00001"
+  code: "https://github.com/systems-researcher/example"
+  slides: "https://example.org/slides"
+sections:
+  - id: findings
+    title: "What we measured"
+    body: "One **clear** result.\n\n- first\n- second"
+    side:
+      label: "N"
+      text: "12 sessions"
+figures:
+  - id: plate
+    src: content/figures/plate.png
+    alt: "A plate"
+    caption: "The first plate."
+    after: opening
+  - id: mark
+    src: content/figures/mark.svg
+    alt: ""
+    decorative: true
+    caption: "Mark"
+    after: findings
