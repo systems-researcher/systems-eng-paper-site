@@ -37,5 +37,29 @@ class CheckTests(unittest.TestCase):
         self.assertTrue(any("og:title" in m for m in msgs))
 
 
+
+
+class RenderedPagePassesCheck(unittest.TestCase):
+    def test_rendered_paper_page_passes_check(self):
+        import shutil, tempfile
+        from pathlib import Path
+        from render.build import build_paper
+        from render.check_html import check
+        root = Path(__file__).resolve().parents[1]
+        tmp = Path(tempfile.mkdtemp())
+        try:
+            shutil.copytree(root / "tests" / "fixtures", tmp / "content")
+            docs = tmp / "docs"
+            docs.mkdir()
+            (docs / "index.html").write_text("STUB", encoding="utf-8")
+            import os
+            os.environ["GITHUB_REPOSITORY"] = "systems-researcher/example-paper"
+            build_paper(tmp / "content" / "paper.yaml", tmp, docs)
+            html = (docs / "index.html").read_text(encoding="utf-8")
+            css = (root / "docs" / "assets" / "site.css").read_text(encoding="utf-8")
+            self.assertEqual(check(html, css_texts=[css]), [])
+        finally:
+            shutil.rmtree(tmp)
+
 if __name__ == "__main__":
     unittest.main()

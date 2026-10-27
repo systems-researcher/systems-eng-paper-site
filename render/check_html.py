@@ -54,6 +54,8 @@ class _Scanner(HTMLParser):
                 if "stylesheet" in rels:
                     self.stylesheets.append(href)
                     self.urls.append(("stylesheet href", href))
+                elif rels:
+                    self.urls.append(("link href rel=%s" % rels[0], href))
                 else:
                     self.urls.append(("link href", href))
         elif tag == "script":
@@ -102,6 +104,8 @@ def check(html, index=False, css_texts=None):
         elif kind in ("stylesheet href", "script src"):
             if "//" in url or ":" in url.split("/")[0]:
                 problems.append("%s must be relative, got %r" % (kind, url))
+        elif kind == "link href rel=canonical":
+            pass  # canonical URLs are absolute by definition; they name this page
         elif url.startswith("http:") or url.startswith("https:") or url.startswith("//"):
             problems.append("%s must not be absolute, got %r" % (kind, url))
 
