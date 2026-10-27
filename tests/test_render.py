@@ -57,6 +57,8 @@ class RenderTests(unittest.TestCase):
         self.assertIn('href="https://orcid.org/0000-0002-1825-0097"', html)
         self.assertIn("https://arxiv.org/abs/2401.00001", html)
         self.assertIn("data-no-zoom", html)
+        self.assertEqual(html.count('property="og:image"'), 1)
+        self.assertEqual(html.count('name="twitter:image"'), 1)
 
     def test_missing_title_does_not_replace_index(self):
         path = self.tmp / "content" / "paper.yaml"

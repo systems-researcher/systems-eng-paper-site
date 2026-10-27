@@ -24,11 +24,6 @@ def _meta_html(tags, canonical):
     lines = []
     for kind, key, content in tags:
         lines.append('<meta %s="%s" content="%s">' % (kind, _esc(key), _esc(content)))
-    og = canonical.rstrip("/") + "/assets/og.png"
-    lines.append('<meta property="og:image" content="%s">' % _esc(og))
-    lines.append('<meta property="og:image:width" content="1200">')
-    lines.append('<meta property="og:image:height" content="630">')
-    lines.append('<meta name="twitter:image" content="%s">' % _esc(og))
     lines.append('<link rel="canonical" href="%s">' % _esc(canonical))
     return "\n".join(lines)
 
