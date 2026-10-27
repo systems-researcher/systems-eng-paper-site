@@ -1,0 +1,29 @@
+# Required. Fill these in. Empty values fail the render on purpose.
+title: ""
+authors: []
+year:
+licence: ""
+abstract: ""
+
+# Optional. Delete keys you do not use. Unknown keys fail the build.
+subtitle: ""
+venue: ""
+venue_kind: journal
+published: ""
+links:
+  doi: ""
+  arxiv: ""
+  pdf: ""
+  code: ""
+  slides: ""
+  poster: ""
+  video: ""
+sections: []
+figures: []
+
+# Guidance:
+# - Fill only the five required fields above to start; the rest is optional.
+# - Figure images go under content/figures/ and are referenced from the
+#   figures list with src paths like content/figures/fig1.png.
+# - A paper PDF is optional: place it at docs/paper.pdf and it is served
+#   as-is. Do not hand-edit anything else under docs/.
