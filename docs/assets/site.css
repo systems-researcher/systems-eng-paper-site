@@ -1,0 +1,375 @@
+/* Systems Engineering site stylesheet.
+Load after tokens.css. Concept: "The margin". Text column and working
+margin column, divided by one hairline; figures framed as plates.
+Petrol carries structure. Annotation red appears once per page (.annot). */
+
+/* ---------- Fonts (self-hosted, OFL; see fonts/OFL-*.txt) ---------- */
+@font-face { font-family: "EB Garamond"; src: url("./fonts/eb-garamond-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "EB Garamond"; src: url("./fonts/eb-garamond-latin-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "EB Garamond"; src: url("./fonts/eb-garamond-latin-600-normal.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "IBM Plex Sans"; src: url("./fonts/ibm-plex-sans-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "IBM Plex Sans"; src: url("./fonts/ibm-plex-sans-latin-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "IBM Plex Sans"; src: url("./fonts/ibm-plex-sans-latin-600-normal.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+
+/* ---------- Semantic roles (derived from --se-* brand tokens) ---------- */
+:root {
+  color-scheme: light;
+  --bg: var(--se-plate);
+  --bg-deep: #E8EAE7;            /* figure plates, code, record slip */
+  --fg: var(--se-ink);
+  --fg-muted: #505C64;           /* 5.8:1 on plate, 5.3:1 on bg-deep */
+  --accent: var(--se-petrol);    /* links, section marks, figure numbers */
+  --annot: var(--se-annotation-red);
+  --line: var(--se-grid-grey);
+  --line-strong: #8C9591;
+
+  --mono: ui-monospace, "Cascadia Mono", Consolas, "Liberation Mono", monospace;
+
+  /* The sheet: gutter | text | gap | margin */
+  --pad: clamp(1rem, 5vw, 4rem);
+  --gutter: 4.5rem;
+  --text-w: 38rem;
+  --gap: 3rem;
+  --side-w: 15rem;
+  --sheet-w: calc(var(--gutter) + var(--text-w) + var(--gap) + var(--side-w));
+  --into-margin: calc(-1 * (var(--gap) + var(--side-w)));
+  --rule-gap: .75rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #131B22;
+    --bg-deep: #1A242C;
+    --fg: #E6E9E6;
+    --fg-muted: #A0AAB0;
+    --accent: #7DC0C0;
+    --annot: #E3877A;
+    --line: #34414B;
+    --line-strong: #5A6872;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #131B22;
+  --bg-deep: #1A242C;
+  --fg: #E6E9E6;
+  --fg-muted: #A0AAB0;
+  --accent: #7DC0C0;
+  --annot: #E3877A;
+  --line: #34414B;
+  --line-strong: #5A6872;
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 400 1.0625rem/1.6 var(--se-font-body);
+  font-feature-settings: "kern" 1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+p { margin: 0 0 1rem; text-wrap: pretty; }
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+strong, b { font-weight: 600; }
+code, .id { font-family: var(--mono); font-size: .86em; }
+img, svg { max-width: 100%; }
+.num { font-variant-numeric: tabular-nums lining-nums; }
+
+.skip { position: absolute; left: -9999px; top: 0; z-index: 10; padding: .75rem 1rem; background: var(--bg); color: var(--accent); border: 1px solid var(--line-strong); }
+.skip:focus { left: var(--pad); top: .5rem; }
+
+/* ---------- Masthead ---------- */
+.masthead { border-bottom: var(--se-rule-masthead); border-bottom-color: var(--fg); }
+.masthead-in {
+  max-width: calc(var(--sheet-w) + 2 * var(--pad));
+  margin: 0 auto;
+  padding: 1.1rem var(--pad);
+  display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 2rem;
+}
+.brand-name { font: 600 1.3125rem/1 var(--se-font-display); letter-spacing: .005em; }
+
+/* ---------- The sheet ---------- */
+.sheet {
+  position: relative;
+  max-width: calc(var(--sheet-w) + 2 * var(--pad));
+  margin: 0 auto;
+  padding: 0 var(--pad);
+}
+/* The margin rule: one hairline between text and margin, top to bottom.
+   Anything that spans both columns (wide plates, ledgers) paints a band of
+   ground colour round itself, so the rule stops short of it and resumes
+   below with a clear gap instead of touching it. */
+.sheet::before {
+  content: ""; position: absolute; top: 0; bottom: 0;
+  right: calc(var(--pad) + var(--side-w) + var(--gap) / 2);
+  border-left: 1px solid var(--line);
+  pointer-events: none;
+}
+.opening, .sec {
+  padding-left: var(--gutter);
+  padding-right: calc(var(--gap) + var(--side-w));
+}
+.sec { padding-top: 3.5rem; padding-bottom: 1rem; }
+.sec::after { content: ""; display: table; clear: both; }
+
+/* ---------- Opening ---------- */
+.opening {
+  padding-top: 4.5rem; padding-right: 0;
+  /* Title and lede first in source, so screen readers meet them before the
+     record slip; the grid still sets the slip beside the headline. */
+  display: grid; grid-template-columns: minmax(0, 1fr) var(--side-w);
+  column-gap: var(--gap); align-items: start;
+}
+.opening > * { grid-column: 1; min-width: 0; }
+.opening > .record { grid-column: 2; grid-row: 1 / span 12; float: none; width: auto; margin: .45rem 0 0; }
+.opening h1 {
+  margin: 0 0 2rem;
+  font: 400 clamp(2.5rem, 1.6rem + 3.4vw, 4rem)/1.04 var(--se-font-display);
+  letter-spacing: -.012em;
+  text-wrap: balance;
+  max-width: 22ch;
+}
+.lede { font-size: 1.3125rem; line-height: 1.5; margin-bottom: 1.25rem; }
+.opening > p:not(.lede) { color: var(--fg-muted); }
+
+/* ---------- Headings ---------- */
+h2, h3 { font-family: var(--se-font-display); font-weight: 600; text-wrap: balance; }
+.sec h2 { position: relative; margin: 0 0 1.25rem; font-size: 2.25rem; line-height: 1.1; letter-spacing: -.005em; }
+.sec-n {
+  position: absolute; right: 100%; top: .08em; text-decoration: none;
+  width: var(--gutter); padding-right: 1.1rem; text-align: right;
+  font: 400 1.3125rem/1.6 var(--se-font-display); color: var(--accent);
+  font-variant-numeric: lining-nums;
+}
+a.sec-n:hover { text-decoration: underline; text-decoration-thickness: 1px; }
+.sec h3 { margin: 2.25rem 0 .6rem; font-size: 1.3125rem; line-height: 1.25; }
+
+/* ---------- Margin notes ----------
+   Place an aside immediately BEFORE the paragraph it glosses; it floats into
+   the margin and aligns with that paragraph's first line. */
+.side {
+  float: right; clear: right;
+  width: var(--side-w);
+  margin: .3rem var(--into-margin) 1rem 0;
+  font-size: .8125rem; line-height: 1.5; color: var(--fg-muted);
+}
+.side p { margin: 0 0 .5rem; }
+.side-k { display: block; color: var(--fg); font-weight: 600; margin-bottom: .15rem; }
+
+/* The record slip: paper metadata as a catalogue card. */
+.record {
+  background: var(--bg-deep);
+  padding: .9rem 1rem 1rem;
+  margin-top: .45rem;
+}
+.record-t { margin: 0 0 .6rem; font: italic 400 1.0625rem/1.2 var(--se-font-display); color: var(--fg); }
+.record dl { margin: 0; display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: .35rem .75rem; }
+.record dt { color: var(--fg-muted); }
+.record dd { margin: 0; color: var(--fg); }
+
+/* ---------- Annotation (the one red element per page) ---------- */
+.annot {
+  background: linear-gradient(var(--annot), var(--annot)) left calc(100% - .02em) / 100% 2px no-repeat;
+  padding-bottom: .08em;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .annot { background-size: 0 2px; animation: annot-draw 900ms cubic-bezier(.3, .6, .2, 1) 700ms forwards; }
+  @keyframes annot-draw { to { background-size: 100% 2px; } }
+}
+
+/* ---------- Figures as plates ----------
+   Caption sits in the margin on wide screens. Captions start with the figure
+   number. */
+.plate {
+  clear: right;
+  margin: 2rem var(--into-margin) 2rem 0;
+  display: grid; grid-template-columns: minmax(0, 1fr) var(--side-w);
+  column-gap: var(--gap); align-items: start;
+}
+.plate-body {
+  --rm: var(--line-strong);
+  position: relative; min-width: 0;
+  padding: 1.75rem 1.5rem 1.5rem;
+  background:
+    linear-gradient(var(--rm), var(--rm)) left 0 top 7px / 15px 1px no-repeat,
+    linear-gradient(var(--rm), var(--rm)) left 7px top 0 / 1px 15px no-repeat,
+    linear-gradient(var(--rm), var(--rm)) right 0 top 7px / 15px 1px no-repeat,
+    linear-gradient(var(--rm), var(--rm)) right 7px top 0 / 1px 15px no-repeat,
+    linear-gradient(var(--rm), var(--rm)) left 0 bottom 7px / 15px 1px no-repeat,
+    linear-gradient(var(--rm), var(--rm)) left 7px bottom 0 / 1px 15px no-repeat,
+    linear-gradient(var(--rm), var(--rm)) right 0 bottom 7px / 15px 1px no-repeat,
+    linear-gradient(var(--rm), var(--rm)) right 7px bottom 0 / 1px 15px no-repeat,
+    var(--bg-deep);
+}
+.plate-title { margin: 0 0 1.1rem; font: 600 1.125rem/1.3 var(--se-font-display); }
+.plate figcaption { grid-column: 2; grid-row: 1; font-size: .8125rem; line-height: 1.5; color: var(--fg-muted); padding-top: .2rem; }
+.plate > .plate-body { grid-column: 1; grid-row: 1; }
+.fig-n { display: block; margin-bottom: .2rem; font: italic 400 1.0625rem/1.3 var(--se-font-display); color: var(--accent); }
+.plate.is-wide { grid-template-columns: minmax(0, 1fr); }
+.plate.is-wide > .plate-body, .ledger { box-shadow: 0 0 0 var(--rule-gap) var(--bg); }
+.plate.is-wide figcaption { grid-column: 1; grid-row: 2; max-width: min(var(--text-w), 100% - var(--gap) - var(--side-w)); padding-top: .9rem; }
+
+/* ---------- Ledger: dated entries with a status ---------- */
+.ledger {
+  list-style: none; padding: 0; border-top: 1px solid var(--fg);
+  /* The status column sits in the margin; the list covers the margin rule. */
+  position: relative; background: var(--bg);
+  margin: 1.5rem var(--into-margin) 1.5rem 0;
+}
+.ledger li { display: grid; grid-template-columns: 3.25rem minmax(0, 1fr) var(--side-w); gap: .25rem 1rem; padding: .85rem 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+.ledger li > :nth-child(2) { padding-right: calc(var(--gap) - 1rem); }
+.ledger-id { font: 400 1.3125rem/1 var(--se-font-display); color: var(--accent); font-variant-numeric: lining-nums; }
+.ledger-name { font-weight: 600; }
+a.ledger-name { color: var(--fg); text-decoration-color: var(--line-strong); }
+a.ledger-name:hover { color: var(--accent); text-decoration-color: currentColor; }
+.ledger-note { display: block; font-size: .9375rem; color: var(--fg-muted); }
+.ledger-links:empty { display: none; }
+.ledger-links { display: flex; flex-wrap: wrap; gap: .1rem 1.1rem; margin-top: .3rem; font-size: .875rem; }
+.ledger-state { display: flex; align-items: center; gap: .55rem; font-size: .875rem; color: var(--fg-muted); }
+.ledger.is-staged li { grid-template-columns: 7rem minmax(0, 1fr) var(--side-w); }
+.ledger.is-staged .ledger-id { font: italic 400 1.0625rem/1.4 var(--se-font-display); color: var(--fg-muted); }
+/* Staged ledger: the stage names a group; rows inside a group share it, so
+   their divider starts after the stage column. */
+.ledger.is-staged { border-bottom: 1px solid var(--line-strong); }
+.ledger.is-staged li { border-bottom: 0; border-top: 1px solid var(--line-strong); }
+.ledger.is-staged li:first-child { border-top: 0; }
+.ledger.is-staged li:not(.is-first) {
+  border-top: 0;
+  background: linear-gradient(var(--line), var(--line)) 8rem 0 / 100% 1px no-repeat;
+}
+.ledger-links .id { font-size: .8125rem; }
+.ledger .is-idle .ledger-id, .ledger li.is-idle .ledger-id { color: var(--fg-muted); }
+
+/* ---------- Citation ---------- */
+.cite { margin: 1.25rem 0; padding: 1.1rem 1.25rem; background: var(--bg-deep); font: .8125rem/1.6 var(--mono); tab-size: 2; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* ---------- Copy BibTeX (cite.js) ---------- */
+button[data-copy="bibtex"] {
+  font: 600 0.875rem/1.4 var(--se-font-body);
+  color: var(--se-petrol);
+  background: var(--se-plate);
+  border: var(--se-rule);
+  border-radius: var(--se-radius);
+  padding: var(--se-space-2) var(--se-space-4);
+  cursor: pointer;
+}
+button[data-copy="bibtex"]:hover {
+  border-color: var(--se-ink);
+}
+button[data-copy="bibtex"]:focus-visible {
+  outline: 2px solid var(--se-petrol);
+  outline-offset: 2px;
+}
+
+/* ---------- Colophon ---------- */
+.colophon { margin-top: 4rem; border-top: var(--se-rule-masthead); border-top-color: var(--fg); }
+.colophon-in {
+  max-width: calc(var(--sheet-w) + 2 * var(--pad)); margin: 0 auto;
+  padding: 2rem var(--pad) 4rem;
+  display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr); gap: 1.5rem 2.5rem; align-items: start;
+  font-size: .875rem; color: var(--fg-muted);
+}
+.colophon-in p { margin: 0 0 .5rem; }
+.colophon-k { color: var(--fg); font-weight: 600; }
+
+/* ---------- Narrow: the margin folds into the text column ---------- */
+@media (max-width: 64rem) {
+  :root { --gutter: 0rem; }
+  .sheet::before { display: none; }
+  .plate.is-wide > .plate-body, .ledger { box-shadow: none; }
+  .opening, .sec { padding-right: 0; max-width: calc(var(--text-w) + 4rem); margin: 0 auto; }
+  .opening { display: block; }
+  .opening > .record { margin: .5rem 0 1.5rem; }
+  .plate.is-wide figcaption { max-width: none; }
+  .sec-n { position: static; display: block; width: auto; padding: 0; text-align: left; margin-bottom: .15rem; }
+  .side { float: none; width: auto; margin: 0 0 1.25rem; padding-left: 1rem; border-left: 1px solid var(--line-strong); }
+  .record { padding-left: 1rem; border-left: 0; margin: 0 0 1.5rem; }
+  .plate { display: block; margin-right: 0; }
+  .ledger { margin-right: 0; }
+  .ledger li { grid-template-columns: 3.25rem minmax(0, 1fr) 10rem; }
+  .ledger.is-staged li { grid-template-columns: 7rem minmax(0, 1fr) 7.5rem; }
+  .ledger li > :nth-child(2) { padding-right: 0; }
+  .plate figcaption { padding-top: .8rem; }
+  .masthead-in { gap: .6rem 1.25rem; }
+  .colophon-in { grid-template-columns: 1fr; }
+}
+@media (max-width: 40rem) {
+  body { font-size: 1rem; }
+  .opening { padding-top: 2.5rem; }
+  .sec { padding-top: 2.5rem; }
+  .sec h2 { font-size: 1.75rem; }
+  .lede { font-size: 1.1875rem; }
+  .plate-body { padding: 1.5rem 1rem 1.1rem; }
+  .ledger li, .ledger.is-staged li { grid-template-columns: 2.5rem minmax(0, 1fr); }
+  .ledger.is-staged li { grid-template-columns: minmax(0, 1fr); }
+  .ledger-state { grid-column: 2; }
+  .ledger.is-staged .ledger-state { grid-column: 1; }
+  .ledger.is-staged li:not(.is-first) .ledger-id { display: none; }
+  .ledger.is-staged li:not(.is-first) { background-position: 0 0; }
+}
+
+/* ---------- Figure zoom (zoom.js) ----------
+   Enhancement only: without the script, plates render as they are. */
+.plate-body.is-zoomable { cursor: zoom-in; }
+.zoom-open-btn {
+  position: absolute; top: .35rem; right: 1.5rem;
+  padding: .1rem .55rem; border: 1px solid transparent; background: var(--bg-deep);
+  font: 400 .75rem/1.5 var(--se-font-body); color: var(--fg-muted); cursor: pointer;
+}
+.plate-body:hover > .zoom-open-btn, .zoom-open-btn:focus-visible { color: var(--accent); border-color: var(--line-strong); }
+.zoom {
+  width: min(96vw, 110rem); height: 94vh; max-width: none; max-height: none;
+  margin: auto; padding: 0; border: 1px solid var(--line-strong);
+  background: var(--bg); color: var(--fg);
+}
+.zoom[open] { display: flex; flex-direction: column; }
+.zoom::backdrop { background: rgb(19 27 34 / .72); }
+html.zoom-open { overflow: hidden; }
+.zoom-bar { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .7rem 1.25rem; border-bottom: 1px solid var(--line); }
+.zoom-title { margin: 0; font: 600 1.125rem/1.3 var(--se-font-display); }
+.zoom-close { flex: none; padding: .35rem .9rem; border: 1px solid var(--line-strong); background: var(--bg); font: 600 .875rem/1.4 var(--se-font-body); color: var(--accent); cursor: pointer; }
+.zoom-close:hover { border-color: var(--accent); }
+.zoom-stage { flex: 1 1 auto; min-height: 0; overflow: auto; display: flex; padding: 1.5rem; background: var(--bg-deep); }
+.zoom-body { margin: auto; width: 100%; }
+.zoom-body svg { display: block; width: 100%; height: auto; max-height: calc(94vh - 13rem); }
+.zoom-caption { flex: none; max-height: 28vh; overflow: auto; padding: .9rem 1.25rem 1.1rem; border-top: 1px solid var(--line); font-size: .875rem; line-height: 1.55; color: var(--fg-muted); }
+.zoom-caption:empty { display: none; }
+@media (max-width: 40rem) {
+  .zoom { width: 100vw; height: 100dvh; border: 0; }
+  .zoom-stage { padding: 1rem; }
+  /* Near-desktop size, panned sideways or pinched, so labels stay legible. */
+  .zoom .zoom-body svg { min-width: 56rem; max-height: none; }
+  .zoom-caption { max-height: 22vh; }
+}
+
+/* ---------- Forced colours: keep the plate frame and the red rule visible ----------
+   High-contrast modes drop backgrounds and gradients, which would flatten the
+   plate's corner ticks and the annotation underline. Draw them in system
+   colours instead. */
+@media (forced-colors: active) {
+  .annot, .plate-body {
+    forced-color-adjust: none;
+    --accent: CanvasText; --fg-muted: CanvasText; --line-strong: CanvasText;
+  }
+}
+
+/* ---------- Print: paper is the native medium ---------- */
+@media print {
+  :root, :root[data-theme], :root:not([data-theme="light"]) {
+    --bg: #fff; --bg-deep: #f3f4f2; --fg: var(--se-ink); --fg-muted: #505C64;
+    --accent: var(--se-petrol); --annot: var(--se-annotation-red);
+    --line: var(--se-grid-grey); --line-strong: #8C9591;
+  }
+  .skip, .zoom-open-btn { display: none; }
+  .sheet::before { border-color: #ccc; }
+  .annot { animation: none; background-size: 100% 2px; }
+  a { color: inherit; }
+  .plate, .cite { break-inside: avoid; }
+}
