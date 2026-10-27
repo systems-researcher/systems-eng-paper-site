@@ -42,10 +42,10 @@ class _Scanner(HTMLParser):
             if href is not None:
                 self.urls.append(("a href", href))
         elif tag == "meta":
-            name = a.get("name")
+            name = a.get("name") or a.get("property")
             if name:
                 self.meta[name] = a.get("content", "")
-                if name in CITATION_NAMES:
+                if a.get("name") in CITATION_NAMES:
                     self.citation = True
         elif tag == "link":
             rels = a.get("rel", "").split()
@@ -79,6 +79,10 @@ def check(html, index=False, css_texts=None):
         problems.append('missing <main id="main">')
     if scanner.meta.get("color-scheme") != "light dark":
         problems.append('missing <meta name="color-scheme" content="light dark">')
+    if not scanner.meta.get("description"):
+        problems.append('missing <meta name="description">')
+    if not scanner.meta.get("og:title"):
+        problems.append('missing <meta property="og:title">')
     if index:
         found = [n for n in CITATION_NAMES if n in scanner.meta]
         if found:

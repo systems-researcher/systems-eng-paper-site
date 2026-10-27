@@ -3,6 +3,8 @@ from render.check_html import check
 
 GOOD = """<!DOCTYPE html><html lang="en"><head>
 <meta name="color-scheme" content="light dark">
+<meta name="description" content="x">
+<meta property="og:title" content="y">
 <meta name="citation_title" content="T">
 <meta name="citation_author" content="A">
 <meta name="citation_publication_date" content="2026">
@@ -26,6 +28,13 @@ class CheckTests(unittest.TestCase):
     def test_http_anchor_fails(self):
         bad = GOOD.replace("https://doi.org", "http://doi.org")
         self.assertTrue(any("https" in m for m in check(bad, index=False)))
+
+    def test_missing_required_meta_fails(self):
+        bad = GOOD.replace('<meta name="description" content="x">\n', "")
+        bad = bad.replace('<meta property="og:title" content="y">\n', "")
+        msgs = check(bad, index=False)
+        self.assertTrue(any("description" in m for m in msgs))
+        self.assertTrue(any("og:title" in m for m in msgs))
 
 
 if __name__ == "__main__":

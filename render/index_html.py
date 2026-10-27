@@ -42,6 +42,7 @@ def render_index(index: dict) -> str:
         _meta("property", "og:description", description),
         _meta("property", "og:url", INDEX_URL),
         _meta("property", "og:image", INDEX_URL + "assets/og.png"),
+        _meta("name", "description", description),
         _meta("name", "DC.title", INDEX_TITLE),
         _meta("name", "DC.publisher", "Loughborough University"),
     ])
