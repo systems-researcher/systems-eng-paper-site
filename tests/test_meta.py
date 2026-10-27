@@ -74,5 +74,30 @@ class TagTests(unittest.TestCase):
         self.assertFalse(any(t[1].startswith("citation_") and t[1].endswith("_title") and t[1] != "citation_title" for t in tags))
 
 
+    def test_og_image_emitted(self):
+        tags = meta_tags(PAPER, "https://systems-researcher.github.io/probe/")
+        got = dict((t[1], t[2]) for t in tags)
+        self.assertEqual(got["og:image"], "https://systems-researcher.github.io/probe/assets/og.png")
+        self.assertEqual(got["og:image:width"], "1200")
+        self.assertEqual(got["og:image:height"], "630")
+        self.assertEqual(got["twitter:image"], "https://systems-researcher.github.io/probe/assets/og.png")
+
+    def test_og_image_slash_normalised_on_site_override(self):
+        paper = dict(PAPER, links={"site": "https://example.edu/paper"})
+        tags = meta_tags(paper, canonical_url(paper, "o/r"))
+        image = [t[2] for t in tags if t[1] == "og:image"][0]
+        self.assertEqual(image, "https://example.edu/paper/assets/og.png")
+
+    def test_dc_relation_arxiv_normalised(self):
+        paper = dict(PAPER, links={"arxiv": "arXiv:2401.00001"})
+        tags = meta_tags(paper, "https://systems-researcher.github.io/probe/")
+        self.assertIn(("name", "DC.relation", "https://arxiv.org/abs/2401.00001"), tags)
+
+    def test_dc_relation_arxiv_url_passthrough(self):
+        paper = dict(PAPER, links={"arxiv": "https://arxiv.org/abs/2401.00001"})
+        tags = meta_tags(paper, "https://systems-researcher.github.io/probe/")
+        self.assertIn(("name", "DC.relation", "https://arxiv.org/abs/2401.00001"), tags)
+
+
 if __name__ == "__main__":
     unittest.main()

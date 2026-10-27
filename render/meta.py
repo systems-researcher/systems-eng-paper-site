@@ -62,9 +62,14 @@ def meta_tags(paper, canonical):
     _add(tags, "property", "og:title", paper["title"])
     _add(tags, "property", "og:description", description)
     _add(tags, "property", "og:url", canonical)
+    image = canonical.rstrip("/") + "/assets/og.png"
+    _add(tags, "property", "og:image", image)
+    _add(tags, "property", "og:image:width", "1200")
+    _add(tags, "property", "og:image:height", "630")
     _add(tags, "name", "twitter:card", "summary_large_image")
     _add(tags, "name", "twitter:title", paper["title"])
     _add(tags, "name", "twitter:description", description)
+    _add(tags, "name", "twitter:image", image)
     _add(tags, "name", "DC.title", paper["title"])
     for author in paper["authors"]:
         _add(tags, "name", "DC.creator", author["name"])
@@ -77,8 +82,9 @@ def meta_tags(paper, canonical):
     _add(tags, "name", "DC.identifier", (_DOI_URL + bare_doi(doi)) if doi else canonical)
     _add(tags, "name", "DC.rights", paper["licence"])
     for rel in ("arxiv", "code", "pdf"):
-        if paper.get("links", {}).get(rel):
-            _add(tags, "name", "DC.relation", str(paper["links"][rel]))  # identifier is DOI-or-canonical, never these
+        value = paper.get("links", {}).get(rel)
+        if value:
+            _add(tags, "name", "DC.relation", arxiv_url(value) if rel == "arxiv" else str(value))  # identifier is DOI-or-canonical, never these
     _add(tags, "name", "citation_title", paper["title"])
     for author in paper["authors"]:
         _add(tags, "name", "citation_author", author["name"])
