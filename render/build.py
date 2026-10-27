@@ -42,8 +42,15 @@ def build_paper(yaml_path, repo_root, docs_root):
 
 def _check_files(paper, repo_root):
     basenames = []
+    figures_root = (repo_root / "content" / "figures").resolve()
     for fig in paper.get("figures") or []:
-        src = repo_root / fig["src"]
+        src = (repo_root / fig["src"]).resolve()
+        if not src.is_relative_to(figures_root):
+            sys.stderr.write(
+                "paper.yaml: figure path escapes content/figures/ '%s'\n"
+                % fig["src"]
+            )
+            raise SystemExit(1)
         if not src.is_file():
             sys.stderr.write("paper.yaml: missing figure file '%s'\n" % fig["src"])
             raise SystemExit(1)
@@ -69,9 +76,12 @@ def _check_files(paper, repo_root):
 def _copy_figures(paper, repo_root, docs_root):
     dest = docs_root / "assets" / "figures"
     dest.mkdir(parents=True, exist_ok=True)
+    figures_root = (repo_root / "content" / "figures").resolve()
     out = {}
     for fig in paper.get("figures") or []:
-        src = repo_root / fig["src"]
+        src = (repo_root / fig["src"]).resolve()
+        if not src.is_relative_to(figures_root):
+            raise ValueError("figure path escapes content/figures/: %s" % fig["src"])
         shutil.copyfile(src, dest / src.name)
         out[fig["id"]] = "assets/figures/%s" % src.name
     return out

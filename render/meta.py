@@ -82,7 +82,7 @@ def meta_tags(paper, canonical):
     _add(tags, "name", "DC.identifier", (_DOI_URL + bare_doi(doi)) if doi else canonical)
     _add(tags, "name", "DC.rights", paper["licence"])
     for rel in ("arxiv", "code", "pdf"):
-        value = paper.get("links", {}).get(rel)
+        value = (paper.get("links") or {}).get(rel)
         if value:
             _add(tags, "name", "DC.relation", arxiv_url(value) if rel == "arxiv" else str(value))  # identifier is DOI-or-canonical, never these
     _add(tags, "name", "citation_title", paper["title"])

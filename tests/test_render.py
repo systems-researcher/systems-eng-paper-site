@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from render.build import build_paper
+from render.build import _check_files, build_paper
 from render.og import png_size
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -76,6 +76,55 @@ class RenderTests(unittest.TestCase):
         build_paper(path, self.tmp, self.docs)
         html = (self.docs / "index.html").read_text(encoding="utf-8")
         self.assertNotIn('href=""', html)
+
+    def test_links_null_builds(self):
+        path = self.tmp / "content" / "paper.yaml"
+        text = path.read_text(encoding="utf-8")
+        # replace the links block with a null mapping
+        start = text.index("\nlinks:")
+        end = text.index("\nsections:")
+        path.write_text(text[:start] + "\nlinks:\n" + text[end:], encoding="utf-8")
+        os.environ["GITHUB_REPOSITORY"] = "systems-researcher/example-paper"
+        build_paper(path, self.tmp, self.docs)
+        html = (self.docs / "index.html").read_text(encoding="utf-8")
+        self.assertIn("Epistemic adequacy under pressure", html)
+
+    def test_check_files_rejects_path_escape(self):
+        # lexical escape: src joins outside content/figures after resolve
+        outside = self.tmp / "docs" / "assets"
+        outside.mkdir(parents=True, exist_ok=True)
+        target = outside / "og.png"
+        target.write_bytes(b"\x89PNG\r\n\x1a\n")
+        paper = {
+            "figures": [{
+                "id": "x",
+                "src": "content/figures/../../docs/assets/og.png",
+                "alt": "a",
+                "caption": "c",
+            }],
+        }
+        with self.assertRaises(SystemExit):
+            _check_files(paper, self.tmp)
+        # symlink escape when platform supports it
+        fig_dir = self.tmp / "content" / "figures"
+        fig_dir.mkdir(parents=True, exist_ok=True)
+        link = fig_dir / "escape.png"
+        try:
+            if link.exists() or link.is_symlink():
+                link.unlink()
+            link.symlink_to(target)
+        except (OSError, NotImplementedError):
+            self.skipTest("symlinks unavailable")
+        paper2 = {
+            "figures": [{
+                "id": "y",
+                "src": "content/figures/escape.png",
+                "alt": "a",
+                "caption": "c",
+            }],
+        }
+        with self.assertRaises(SystemExit):
+            _check_files(paper2, self.tmp)
 
 
 if __name__ == "__main__":

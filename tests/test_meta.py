@@ -62,6 +62,13 @@ class TagTests(unittest.TestCase):
         self.assertFalse(any(t[1] == "citation_doi" for t in tags))
         self.assertTrue(all(t[2].strip() for t in tags))
 
+    def test_links_null_no_crash(self):
+        paper = dict(PAPER, links=None)
+        tags = meta_tags(paper, "https://systems-researcher.github.io/probe/")
+        names = [t[1] for t in tags]
+        self.assertIn("citation_title", names)
+        self.assertIn("DC.title", names)
+
     def test_conference_uses_conference_title(self):
         paper = dict(PAPER, venue_kind="conference", venue="MODELS")
         tags = meta_tags(paper, "https://systems-researcher.github.io/probe/")

@@ -110,6 +110,31 @@ class ValidateTests(unittest.TestCase):
         with self.assertRaises(PaperError):
             validate_paper(bad_alt)
 
+    def test_figure_src_traversal_rejected(self):
+        base = {
+            "id": "arch", "alt": "A", "caption": "c",
+        }
+        for src in (
+            "content/figures/../../docs/assets/og.png",
+            "content/figures/../secret.png",
+            "/content/figures/arch.svg",
+            "C:/content/figures/arch.svg",
+            "content/figures\\arch.svg",
+            "content/figures/foo/../../../etc/passwd.png",
+        ):
+            bad = dict(GOOD, figures=[dict(base, src=src)])
+            with self.assertRaises(PaperError) as cm:
+                validate_paper(bad)
+            joined = "\n".join(cm.exception.messages)
+            self.assertIn("figures[0].src must be under content/figures/", joined, src)
+
+    def test_links_null_normalised(self):
+        out = validate_paper(dict(GOOD, links=None))
+        self.assertEqual(out["links"], {})
+        with self.assertRaises(PaperError) as cm:
+            validate_paper(dict(GOOD, links=["not", "a", "map"]))
+        self.assertIn("links must be mapping", "\n".join(cm.exception.messages))
+
     def test_figure_after_unknown_section(self):
         bad = dict(GOOD, figures=[{
             "id": "arch", "src": "content/figures/arch.svg",

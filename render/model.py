@@ -177,10 +177,16 @@ def validate_paper(doc: object) -> dict:
         if fig.get("id") in seen_fig_ids:
             errors.append("%s.id duplicate '%s'" % (path, fig.get("id")))
         seen_fig_ids.add(fig.get("id"))
-        src = fig.get("src") or ""
-        if not str(src).startswith("content/figures/"):
+        src_s = str(fig.get("src") or "")
+        if (
+            "\\" in src_s
+            or src_s.startswith("/")
+            or (len(src_s) >= 2 and src_s[1] == ":")
+            or any(part == ".." for part in src_s.split("/"))
+            or not src_s.startswith("content/figures/")
+        ):
             errors.append("%s.src must be under content/figures/" % path)
-        suffix = str(src).rsplit(".", 1)[-1].lower()
+        suffix = src_s.rsplit(".", 1)[-1].lower()
         if suffix not in ("svg", "png", "jpg", "jpeg", "webp"):
             errors.append("%s.src suffix not allowed" % path)
         if not fig.get("decorative") and _blank(fig.get("alt")):
@@ -190,7 +196,7 @@ def validate_paper(doc: object) -> dict:
         after = fig.get("after")
         if after not in (None, "opening") and after not in ids:
             errors.append("%s.after unknown section '%s'" % (path, after))
-    _ax = (doc.get("links") or {}).get("arxiv")
+    _ax = links.get("arxiv")
     if _ax and not (str(_ax).startswith("https://arxiv.org/abs/") or re.match(r"^arXiv:\d{4}\.\d{4,5}$", str(_ax))):
         errors.append("links.arxiv must be an https://arxiv.org/abs/ URL or arXiv:NNNN.NNNNN")
     for i, c in enumerate(doc.get("changelog") or []):
@@ -203,4 +209,5 @@ def validate_paper(doc: object) -> dict:
     out = dict(doc)
     out["year"] = year_n
     out["authors"] = clean_authors
+    out["links"] = links if isinstance(links, dict) else {}
     return out
