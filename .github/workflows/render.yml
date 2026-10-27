@@ -1,0 +1,72 @@
+name: render
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'content/**'
+      - 'render/**'
+      - 'papers.yml'
+      - '.github/workflows/render.yml'
+      - 'requirements.txt'
+  pull_request:
+    paths:
+      - 'content/**'
+      - 'render/**'
+      - 'papers.yml'
+      - '.github/workflows/render.yml'
+      - 'requirements.txt'
+
+permissions:
+  contents: write
+
+jobs:
+  render-paper:
+    if: github.repository != 'systems-researcher/systems-eng-paper-site'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7  # v7.0.1
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v7  # v7.1.0
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python -m render.build
+      - run: python -m render.check_html docs/index.html --css docs/assets/site.css
+      - uses: stefanzweifel/git-auto-commit-action@v7  # v7.2.1
+        if: github.event_name == 'push'
+        with:
+          commit_message: "Render docs from paper.yaml [skip ci]"
+          file_pattern: docs/**
+      - uses: actions/upload-artifact@v4  # v4.6.2
+        if: github.event_name == 'pull_request'
+        with:
+          name: docs-preview
+          path: docs/
+          retention-days: 7
+
+  render-index:
+    if: github.repository == 'systems-researcher/systems-eng-paper-site'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7  # v7.0.1
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v7  # v7.1.0
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python -m render.build_index
+      - run: python -m render.check_html docs/index.html --index --css docs/assets/site.css
+      - uses: stefanzweifel/git-auto-commit-action@v7  # v7.2.1
+        if: github.event_name == 'push'
+        with:
+          commit_message: "Render docs from papers.yml [skip ci]"
+          file_pattern: docs/**
+      - uses: actions/upload-artifact@v4  # v4.6.2
+        if: github.event_name == 'pull_request'
+        with:
+          name: docs-preview
+          path: docs/
+          retention-days: 7
