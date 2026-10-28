@@ -1,2 +1,7 @@
 description: "Companion sites for papers from Systems Engineering, Loughborough University."
-papers: []
+papers:
+  - title: "Process-lens literature mapping: a pre-registered, reliability-gated method for agent-augmented reviews of research corpora"
+    authors: Hayato Ishida
+    year: 2026
+    url: https://systems-researcher.github.io/process-lens-review/
+
