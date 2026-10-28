@@ -1,19 +1,24 @@
 /* Systems Engineering brand tokens.
-Palette: Figure and Petrol rev 1.
-Type: EB Garamond display, IBM Plex Sans body. */
+Palette: Loughborough Floot re-style 2026-10-28 (talk-10min.pptx).
+Type: Instrument Serif display, IBM Plex Sans body, IBM Plex Mono meta. */
 
 :root {
   /* Color roles */
-  --se-plate: #F2F3F1; /* page background */
-  --se-ink: #131B22; /* text */
-  --se-petrol: #0F5257; /* primary: structure, links, active states */
-  --se-petrol-on-dark: #7DC0C0; /* accent on dark bg */
+  --se-plate: #F7F4FA; /* page background (off-white lavender) */
+  --se-ink: #1F1433; /* text */
+  /* Accent key stays "petrol" in model.py / paper.yaml; value maps to Loughborough magenta. */
+  --se-petrol: #CD0067; /* primary accent (magenta) on light */
+  --se-petrol-on-dark: #F2A6CC; /* brighter pink accent on dark bg */
   --se-annotation-red: #A63A2B; /* support: callouts, underlines, one per composition */
-  --se-grid-grey: #C9CDC9; /* neutral: hairlines, grids, dividers */
+  --se-grid-grey: #C9BFD6; /* neutral: hairlines, grids, dividers */
+  --se-deep-purple: #330065; /* masthead / structure band */
+  --se-lavender: #D9CCE8; /* tint panels */
+  --se-panel-dark: #3D3550; /* dark-scheme panels */
 
   /* Typography */
-  --se-font-display: "EB Garamond", Georgia, "Times New Roman", serif;
+  --se-font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
   --se-font-body: "IBM Plex Sans", "Segoe UI", -apple-system, sans-serif;
+  --se-font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
 
   /* Spacing scale */
   --se-space-1: 4px;
@@ -29,7 +34,7 @@ Type: EB Garamond display, IBM Plex Sans body. */
   --se-radius: 0px; /* rectilinear; soften to 2px only where needed */
   --se-rule: 1px solid var(--se-grid-grey);
   --se-rule-strong: 1px solid var(--se-ink);
-  --se-rule-masthead: 3px double var(--se-ink);
+  --se-rule-masthead: none; /* solid band replaces double rule */
 
   /* Annotation underline height; 0 drops the mark (candidate b) */
   --se-annot-line: 2px;

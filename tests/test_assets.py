@@ -4,13 +4,13 @@ import unittest
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "docs" / "assets"
 FONTS = [
-    "eb-garamond-latin-400-normal.woff2",
-    "eb-garamond-latin-400-italic.woff2",
-    "eb-garamond-latin-600-normal.woff2",
+    "instrument-serif-latin-400-normal.woff2",
+    "instrument-serif-latin-400-italic.woff2",
     "ibm-plex-sans-latin-400-normal.woff2",
     "ibm-plex-sans-latin-400-italic.woff2",
     "ibm-plex-sans-latin-600-normal.woff2",
-    "OFL-EB-Garamond.txt",
+    "ibm-plex-mono-latin-400-normal.woff2",
+    "InstrumentSerif-OFL.txt",
     "OFL-IBM-Plex-Sans.txt",
 ]
 
@@ -26,9 +26,15 @@ class AssetTests(unittest.TestCase):
         blob = css + tokens
         for banned in ("fonts.googleapis.com", "fonts.gstatic.com", "cdn.jsdelivr.net"):
             self.assertNotIn(banned, blob)
-        self.assertIn("eb-garamond-latin-400-normal.woff2", css)
+        self.assertIn("instrument-serif-latin-400-normal.woff2", css)
+        self.assertIn("ibm-plex-mono-latin-400-normal.woff2", css)
         self.assertIn("--se-plate", tokens)
+        self.assertIn("#CD0067", tokens)
+        self.assertIn("#330065", blob)
         self.assertNotIn("--sr-", tokens)
+        self.assertNotIn("#0F5257", blob)
+        self.assertNotIn("EB Garamond", blob)
+        self.assertNotIn("eb-garamond", blob)
 
     def test_zoom_has_no_fetch(self):
         js = (ASSETS / "zoom.js").read_text(encoding="utf-8")

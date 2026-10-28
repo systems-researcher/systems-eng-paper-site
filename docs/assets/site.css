@@ -1,29 +1,34 @@
 /* Systems Engineering site stylesheet.
 Load after tokens.css. Concept: "The margin". Text column and working
 margin column, divided by one hairline; figures framed as plates.
-Petrol carries structure. Annotation red appears once per page (.annot). */
+Loughborough Floot 2026-10-28: deep purple structure, magenta accent slot
+(key name petrol), Instrument Serif display, IBM Plex Mono meta. */
 
-/* ---------- Fonts (self-hosted, OFL; see fonts/OFL-*.txt) ---------- */
-@font-face { font-family: "EB Garamond"; src: url("./fonts/eb-garamond-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "EB Garamond"; src: url("./fonts/eb-garamond-latin-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
-@font-face { font-family: "EB Garamond"; src: url("./fonts/eb-garamond-latin-600-normal.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+/* ---------- Fonts (self-hosted, OFL; see fonts/*OFL*.txt) ---------- */
+@font-face { font-family: "Instrument Serif"; src: url("./fonts/instrument-serif-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Instrument Serif"; src: url("./fonts/instrument-serif-latin-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
 @font-face { font-family: "IBM Plex Sans"; src: url("./fonts/ibm-plex-sans-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "IBM Plex Sans"; src: url("./fonts/ibm-plex-sans-latin-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
 @font-face { font-family: "IBM Plex Sans"; src: url("./fonts/ibm-plex-sans-latin-600-normal.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "IBM Plex Mono"; src: url("./fonts/ibm-plex-mono-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+
 
 /* ---------- Semantic roles (derived from --se-* brand tokens) ---------- */
 :root {
   color-scheme: light;
   --bg: var(--se-plate);
-  --bg-deep: #E8EAE7;            /* figure plates, code, record slip */
+  --bg-deep: var(--se-lavender, #D9CCE8); /* figure plates, code, record slip */
   --fg: var(--se-ink);
-  --fg-muted: #505C64;           /* 5.8:1 on plate, 5.3:1 on bg-deep */
-  --accent: var(--se-petrol);    /* links, section marks, figure numbers */
+  --fg-muted: #5C516B;           /* 6.78:1 on plate */
+  --accent: var(--se-petrol);    /* large/heading/figure accent (magenta 5.08:1 on plate) */
+  --link: var(--se-deep-purple, #330065); /* body-size links: 14.51:1 on plate */
   --annot: var(--se-annotation-red);
   --line: var(--se-grid-grey);
-  --line-strong: #8C9591;
+  --line-strong: #8B7FA0;
+  --masthead-bg: var(--se-deep-purple, #330065);
+  --masthead-fg: #FFFFFF;
 
-  --mono: ui-monospace, "Cascadia Mono", Consolas, "Liberation Mono", monospace;
+  --mono: var(--se-font-mono);
 
   /* The sheet: gutter | text | gap | margin */
   --pad: clamp(1rem, 5vw, 4rem);
@@ -39,26 +44,32 @@ Petrol carries structure. Annotation red appears once per page (.annot). */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --bg: #131B22;
-    --bg-deep: #1A242C;
-    --fg: #E6E9E6;
-    --fg-muted: #A0AAB0;
-    --accent: var(--se-petrol-on-dark, #7DC0C0);
+    --bg: #1F1433;
+    --bg-deep: #3D3550;
+    --fg: #F7F4FA;
+    --fg-muted: #C9BFD6;
+    --accent: var(--se-petrol-on-dark, #F2A6CC);
+    --link: var(--se-petrol-on-dark, #F2A6CC);
     --annot: #E3877A;
-    --line: #34414B;
-    --line-strong: #5A6872;
+    --line: #5A4E6E;
+    --line-strong: #8B7FA0;
+    --masthead-bg: #330065;
+    --masthead-fg: #F7F4FA;
   }
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #131B22;
-  --bg-deep: #1A242C;
-  --fg: #E6E9E6;
-  --fg-muted: #A0AAB0;
-  --accent: var(--se-petrol-on-dark, #7DC0C0);
+  --bg: #1F1433;
+  --bg-deep: #3D3550;
+  --fg: #F7F4FA;
+  --fg-muted: #C9BFD6;
+  --accent: var(--se-petrol-on-dark, #F2A6CC);
+  --link: var(--se-petrol-on-dark, #F2A6CC);
   --annot: #E3877A;
-  --line: #34414B;
-  --line-strong: #5A6872;
+  --line: #5A4E6E;
+  --line-strong: #8B7FA0;
+  --masthead-bg: #330065;
+  --masthead-fg: #F7F4FA;
 }
 
 /* ---------- Base ---------- */
@@ -74,32 +85,40 @@ body {
   text-rendering: optimizeLegibility;
 }
 p { margin: 0 0 1rem; text-wrap: pretty; }
-a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; }
-a:hover { text-decoration-thickness: 2px; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: .18em; }
+a:hover { text-decoration-thickness: 2px; color: var(--accent); }
+:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
 strong, b { font-weight: 600; }
 code, .id { font-family: var(--mono); font-size: .86em; }
 img, svg { max-width: 100%; }
-.num { font-variant-numeric: tabular-nums lining-nums; }
+.num { font-variant-numeric: tabular-nums lining-nums; font-family: var(--mono); }
 
-.skip { position: absolute; left: -9999px; top: 0; z-index: 10; padding: .75rem 1rem; background: var(--bg); color: var(--accent); border: 1px solid var(--line-strong); }
+.skip { position: absolute; left: -9999px; top: 0; z-index: 10; padding: .75rem 1rem; background: var(--bg); color: var(--link); border: 1px solid var(--line-strong); }
 .skip:focus { left: var(--pad); top: .5rem; }
 
-/* ---------- Masthead ---------- */
-.masthead { border-bottom: var(--se-rule-masthead); border-bottom-color: var(--fg); }
+/* ---------- Masthead (deep purple band; CSS-only) ---------- */
+.masthead {
+  border-bottom: 0;
+  background: var(--masthead-bg);
+  color: var(--masthead-fg);
+}
 .masthead-in {
   max-width: calc(var(--sheet-w) + 2 * var(--pad));
   margin: 0 auto;
   padding: 1.1rem var(--pad);
   display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 2rem;
 }
-.brand-name { font: 600 1.3125rem/1 var(--se-font-display); letter-spacing: .005em; }
+.brand-name {
+  font: 400 1.5rem/1 var(--se-font-display);
+  letter-spacing: .005em;
+  color: var(--masthead-fg);
+}
 .emblem {
   display: block;
   width: 2.5rem;
   height: 2.5rem;
   flex: none;
-  color: var(--accent);
+  color: var(--masthead-fg);
   margin-right: .15rem;
 }
 /* Reserved LU mark slot; hidden until official asset lands. */
@@ -151,12 +170,14 @@ img, svg { max-width: 100%; }
   letter-spacing: -.012em;
   text-wrap: balance;
   max-width: 22ch;
+  color: var(--fg);
 }
 .lede { font-size: 1.3125rem; line-height: 1.5; margin-bottom: 1.25rem; }
 .byline {
   display: flex; flex-wrap: wrap; gap: .15rem 1.25rem;
   margin: 0 0 1rem;
   font-size: .9375rem; line-height: 1.5; color: var(--fg-muted);
+  font-family: var(--mono);
 }
 .byline a { color: var(--fg); text-decoration-color: var(--line-strong); }
 .byline a:hover { color: var(--accent); text-decoration-color: currentColor; }
@@ -165,19 +186,20 @@ img, svg { max-width: 100%; }
   margin: 1.25rem 0 0;
   font-size: .9375rem;
 }
-.links a { font-weight: 600; }
+.links a { font-weight: 600; color: var(--link); }
 .opening > p:not(.lede) { color: var(--fg-muted); }
 
 /* ---------- Headings ---------- */
-h2, h3 { font-family: var(--se-font-display); font-weight: 600; text-wrap: balance; }
-.sec h2 { position: relative; margin: 0 0 1.25rem; font-size: 2.25rem; line-height: 1.1; letter-spacing: -.005em; }
+h2, h3 { font-family: var(--se-font-display); font-weight: 400; text-wrap: balance; }
+.sec h2 { position: relative; margin: 0 0 1.25rem; font-size: 2.25rem; line-height: 1.1; letter-spacing: -.005em; color: var(--fg); }
 .sec-n {
   position: absolute; right: 100%; top: .08em; text-decoration: none;
   width: var(--gutter); padding-right: 1.1rem; text-align: right;
-  font: 400 1.3125rem/1.6 var(--se-font-display); color: var(--accent);
+  font: 400 1.5rem/1.2 var(--se-font-display); color: var(--fg);
   font-variant-numeric: lining-nums;
 }
-a.sec-n:hover { text-decoration: underline; text-decoration-thickness: 1px; }
+a.sec-n:hover { text-decoration: underline; text-decoration-thickness: 1px; color: var(--accent); }
+a.sec-n:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
 .sec h3 { margin: 2.25rem 0 .6rem; font-size: 1.3125rem; line-height: 1.25; }
 
 /* ---------- Margin notes ----------
@@ -199,7 +221,7 @@ a.sec-n:hover { text-decoration: underline; text-decoration-thickness: 1px; }
   margin-top: .45rem;
 }
 .record-t { margin: 0 0 .6rem; font: italic 400 1.0625rem/1.2 var(--se-font-display); color: var(--fg); }
-.record dl { margin: 0; display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: .35rem .75rem; }
+.record dl { margin: 0; display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: .35rem .75rem; font-family: var(--mono); font-size: .8125rem; }
 .record dt { color: var(--fg-muted); }
 .record dd { margin: 0; color: var(--fg); }
 
@@ -211,6 +233,9 @@ a.sec-n:hover { text-decoration: underline; text-decoration-thickness: 1px; }
 @media (prefers-reduced-motion: no-preference) {
   .annot { background-size: 0 var(--se-annot-line, 2px); animation: annot-draw 900ms cubic-bezier(.3, .6, .2, 1) 700ms forwards; }
   @keyframes annot-draw { to { background-size: 100% var(--se-annot-line, 2px); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .annot { animation: none; background-size: 100% var(--se-annot-line, 2px); }
 }
 
 /* ---------- Figures as plates ----------
@@ -237,10 +262,15 @@ a.sec-n:hover { text-decoration: underline; text-decoration-thickness: 1px; }
     linear-gradient(var(--rm), var(--rm)) right 7px bottom 0 / 1px 15px no-repeat,
     var(--bg-deep);
 }
-.plate-title { margin: 0 0 1.1rem; font: 600 1.125rem/1.3 var(--se-font-display); }
+.plate-title { margin: 0 0 1.1rem; font: 400 1.125rem/1.3 var(--se-font-display); }
 .plate figcaption { grid-column: 2; grid-row: 1; font-size: .8125rem; line-height: 1.5; color: var(--fg-muted); padding-top: .2rem; }
 .plate > .plate-body { grid-column: 1; grid-row: 1; }
-.fig-n { display: block; margin-bottom: .2rem; font: italic 400 1.0625rem/1.3 var(--se-font-display); color: var(--accent); }
+.fig-n {
+  display: block; margin-bottom: .2rem;
+  font: 400 1.0625rem/1.3 var(--mono);
+  color: var(--accent);
+  font-variant-numeric: tabular-nums lining-nums;
+}
 .plate.is-wide { grid-template-columns: minmax(0, 1fr); }
 .plate.is-wide > .plate-body, .ledger { box-shadow: 0 0 0 var(--rule-gap) var(--bg); }
 .plate.is-wide figcaption { grid-column: 1; grid-row: 2; max-width: min(var(--text-w), 100% - var(--gap) - var(--side-w)); padding-top: .9rem; }
@@ -261,7 +291,7 @@ a.ledger-name:hover { color: var(--accent); text-decoration-color: currentColor;
 .ledger-note { display: block; font-size: .9375rem; color: var(--fg-muted); }
 .ledger-links:empty { display: none; }
 .ledger-links { display: flex; flex-wrap: wrap; gap: .1rem 1.1rem; margin-top: .3rem; font-size: .875rem; }
-.ledger-state { display: flex; align-items: center; gap: .55rem; font-size: .875rem; color: var(--fg-muted); }
+.ledger-state { display: flex; align-items: center; gap: .55rem; font-size: .875rem; color: var(--fg-muted); font-family: var(--mono); }
 .ledger.is-staged li { grid-template-columns: 7rem minmax(0, 1fr) var(--side-w); }
 .ledger.is-staged .ledger-id { font: italic 400 1.0625rem/1.4 var(--se-font-display); color: var(--fg-muted); }
 /* Staged ledger: the stage names a group; rows inside a group share it, so
@@ -282,23 +312,24 @@ a.ledger-name:hover { color: var(--accent); text-decoration-color: currentColor;
 /* ---------- Copy BibTeX (cite.js) ---------- */
 button[data-copy="bibtex"] {
   font: 600 0.875rem/1.4 var(--se-font-body);
-  color: var(--se-petrol);
-  background: var(--se-plate);
-  border: var(--se-rule);
+  color: var(--masthead-fg);
+  background: var(--se-deep-purple, #330065);
+  border: 1px solid var(--se-deep-purple, #330065);
   border-radius: var(--se-radius);
   padding: var(--se-space-2) var(--se-space-4);
   cursor: pointer;
 }
 button[data-copy="bibtex"]:hover {
+  background: var(--se-ink);
   border-color: var(--se-ink);
 }
 button[data-copy="bibtex"]:focus-visible {
-  outline: 2px solid var(--se-petrol);
+  outline: 2px solid var(--link);
   outline-offset: 2px;
 }
 
 /* ---------- Colophon ---------- */
-.colophon { margin-top: 4rem; border-top: var(--se-rule-masthead); border-top-color: var(--fg); }
+.colophon { margin-top: 4rem; border-top: 3px solid var(--se-deep-purple, #330065); }
 .colophon-in {
   max-width: calc(var(--sheet-w) + 2 * var(--pad)); margin: 0 auto;
   padding: 2rem var(--pad) 4rem;
@@ -359,12 +390,12 @@ button[data-copy="bibtex"]:focus-visible {
   background: var(--bg); color: var(--fg);
 }
 .zoom[open] { display: flex; flex-direction: column; }
-.zoom::backdrop { background: rgb(19 27 34 / .72); }
+.zoom::backdrop { background: rgb(31 20 51 / .72); }
 html.zoom-open { overflow: hidden; }
 .zoom-bar { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .7rem 1.25rem; border-bottom: 1px solid var(--line); }
-.zoom-title { margin: 0; font: 600 1.125rem/1.3 var(--se-font-display); }
-.zoom-close { flex: none; padding: .35rem .9rem; border: 1px solid var(--line-strong); background: var(--bg); font: 600 .875rem/1.4 var(--se-font-body); color: var(--accent); cursor: pointer; }
-.zoom-close:hover { border-color: var(--accent); }
+.zoom-title { margin: 0; font: 400 1.125rem/1.3 var(--se-font-display); }
+.zoom-close { flex: none; padding: .35rem .9rem; border: 1px solid var(--line-strong); background: var(--bg); font: 600 .875rem/1.4 var(--se-font-body); color: var(--link); cursor: pointer; }
+.zoom-close:hover { border-color: var(--accent); color: var(--accent); }
 .zoom-stage { flex: 1 1 auto; min-height: 0; overflow: auto; display: flex; padding: 1.5rem; background: var(--bg-deep); }
 .zoom-body { margin: auto; width: 100%; }
 .zoom-body svg { display: block; width: 100%; height: auto; max-height: calc(94vh - 13rem); }
@@ -385,20 +416,30 @@ html.zoom-open { overflow: hidden; }
 @media (forced-colors: active) {
   .annot, .plate-body {
     forced-color-adjust: none;
-    --accent: CanvasText; --fg-muted: CanvasText; --line-strong: CanvasText;
+    --accent: CanvasText; --fg-muted: CanvasText; --line-strong: CanvasText; --link: LinkText;
   }
+  .masthead {
+    forced-color-adjust: none;
+    background: Canvas;
+    color: CanvasText;
+    border-bottom: 2px solid CanvasText;
+  }
+  .brand-name, .emblem { color: CanvasText; }
 }
 
 /* ---------- Print: paper is the native medium ---------- */
 @media print {
   :root, :root[data-theme], :root:not([data-theme="light"]) {
-    --bg: #fff; --bg-deep: #f3f4f2; --fg: var(--se-ink); --fg-muted: #505C64;
-    --accent: var(--se-petrol); --annot: var(--se-annotation-red);
-    --line: var(--se-grid-grey); --line-strong: #8C9591;
+    --bg: #fff; --bg-deep: #EDE6F4; --fg: var(--se-ink); --fg-muted: #5C516B;
+    --accent: var(--se-petrol); --link: var(--se-deep-purple, #330065);
+    --annot: var(--se-annotation-red);
+    --line: var(--se-grid-grey); --line-strong: #8B7FA0;
+    --masthead-bg: #330065; --masthead-fg: #fff;
   }
   .skip, .zoom-open-btn { display: none; }
   .sheet::before { border-color: #ccc; }
   .annot { animation: none; background-size: 100% 2px; }
   a { color: inherit; }
   .plate, .cite { break-inside: avoid; }
+  .masthead { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
